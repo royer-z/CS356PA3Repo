@@ -44,6 +44,11 @@ while True:
 
 	endLine = receivedData[2]
 
+	if ('If-Modified-Since' in endLine):
+		conGET = True
+	else:
+		conGET = False
+
 	print(command)
 	print(filename)
 
@@ -53,28 +58,38 @@ while True:
 		content = fResult.read()
 		print("File exists.")
 		# Prepare HTTP GET response
-		t = datetime.datetime.now(timezone.utc)
-		date = time.strftime("%a, %d %b %Y %H:%M:%S %Z\r\n", t)
+		
+		if (conGET == False):
+			t = datetime.datetime.now(timezone.utc)
+			date = time.strftime("%a, %d %b %Y %H:%M:%S %Z\r\n", t)
 
-		secs = os.path.getmtime(filename)
-		t2 = time.gmtime(secs)		
-		last_mod_time = time.strftime("%a, %d %b %Y %H:%M:%S GMT\r\n", t2)
+			secs = os.path.getmtime(filename)
+			t2 = time.gmtime(secs)		
+			last_mod_time = time.strftime("%a, %d %b %Y %H:%M:%S GMT\r\n", t2)
 
-		dataLen = len(content)
+			dataLen = len(content)
 
-		responseGET = "HTTP/1.1 200 OK\r\nDate: "+date+"\r\nLast-Modified: "+last_mod_time+"\r\nContent-Length: "+dataLen+"\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n"+content
+			responseGET = "HTTP/1.1 200 OK\r\nDate: "+date+"\r\nLast-Modified: "+last_mod_time+"\r\nContent-Length: "+dataLen+"\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n"+content
+		else:
+			# Prepare conditional GET response
+		
+		# Send response to client
+		print("Sending data: ")
+		print(responseGET)
+		connectionSocket.send(responseGET.encode())
+		
+		# Close socket
+		print("Closing.")
+		connectionSocket.close()
 
 	except IOError: # If file does not exist
 		print("File does NOT exist.")
-
-	if (command == 'GET'):
-
-
-	# Send response to client
-	print("Sending data: ")
-	print(responseGET)
-	connectionSocket.send(responseGET.encode())
-
-	# Close socket
-	print("Closing.")
-	connectionSocket.close()
+	
+		# Send response to client
+		print("Sending data: ")
+		print(responseGET)
+		connectionSocket.send(responseGET.encode())
+		
+		# Close socket
+		print("Closing.")
+		connectionSocket.close()

@@ -3,6 +3,7 @@
 
 import sys
 from socket import *
+import os.path, time
 
 # Get command line arguments
 argv = sys.argv
@@ -32,7 +33,12 @@ try: # If file IS in Cache
 	print("File is in Cache.")
 
 	# Prepare Coditional GET request
-	requestGET = "requestGET"
+	secs = os.path.getmtime(filename)
+	t2 = time.gmtime(secs)		
+	last_mod_time = time.strftime("%a, %d %b %Y %H:%M:%S GMT\r\n", t2)
+
+	requestGET = "GET "+filename+" HTTP/1.1\r\nHost: "+host+":"+str(port)+"\r\nIf-Modified-Since: "+last_mod_time+"\r\n\r\n"
+
 	# Send request to server
 	print("Sending data: ", requestGET)
 	clientSocket.send(requestGET.encode())
@@ -55,7 +61,7 @@ except IOError: # If file IS NOT in Cache
 	print("File is not in Cache.")
 
 	# Prepare HTTP GET request
-	requestGET = "GET /"+filename+" HTTP/1.1\r\n"+"Host: "+host+":"+str(port)+"\r\n\r\n"
+	requestGET = "GET /"+filename+" HTTP/1.1\r\nHost: "+host+":"+str(port)+"\r\n\r\n"
 	# Send request to server
 	print("Sending data: ") 
 	print(requestGET)
