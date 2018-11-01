@@ -72,7 +72,7 @@ try: # If cache exists
 			# Print file contents, and cache file
 			print(bodyLine)
 			fResult = open("cache.txt", "wt")
-			fResult.write(filename+"\n"+timePart+"\n"+bodyLine+"\n")
+			fResult.write(filename+"\n"+timePart+"\n"+bodyLine)
 			cacheResult.close()
 
 		# Close socket
@@ -125,7 +125,7 @@ try: # If cache exists
 			print("File has been modified.")
 			print(bodyLine)
 			fResult = open("cache.txt", "wt")
-			fResult.write(filename+"\n"+timePart+"\n"+bodyLine+"\n")
+			fResult.write(filename+"\n"+timePart+"\n"+bodyLine)
 			cacheResult.close()
 
 		# Close socket
@@ -168,7 +168,7 @@ except IOError: # If cache does NOT exist
 		# Print file contents, and cache file
 		print(bodyLine)
 		fResult = open("cache.txt", "wt")
-		fResult.write(filename+"\n"+timePart+"\n"+bodyLine+"\n")
+		fResult.write(filename+"\n"+timePart+"\n"+bodyLine)
 		cacheResult.close()
 
 	# Close socket
